@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tipos de Almacenamiento de Datos</title>
+  <!-- Tailwind CSS vía CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+  <header class="bg-blue-600 text-white p-6 text-center shadow-md">
+    <h1 class="text-3xl font-bold">Tipos de Almacenamiento de Datos</h1>
+    <p class="text-blue-100">Web educativa interactiva</p>
+  </header>
+
+  <main class="max-w-4xl mx-auto p-4 space-y-10">
+    <!-- Sección de filtro -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-2">Filtrar Tipos</h2>
+      <select id="filtro" class="p-2 border rounded w-full">
+        <option value="todos">Todos</option>
+        <option value="primario">Almacenamiento Primario</option>
+        <option value="secundario">Almacenamiento Secundario</option>
+        <option value="nube">Almacenamiento en la Nube</option>
+      </select>
+    </section>
+
+    <!-- Sección de tarjetas -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">Tipos en Tarjetas</h2>
+      <div class="grid sm:grid-cols-2 gap-4" id="tarjetas">
+        <div class="bg-white p-4 rounded-2xl shadow hover:shadow-lg transition" data-tipo="primario">
+          <h3 class="text-xl font-bold">RAM</h3>
+          <p>Memoria de acceso aleatorio, volátil y rápida.</p>
+        </div>
+        <div class="bg-white p-4 rounded-2xl shadow hover:shadow-lg transition" data-tipo="secundario">
+          <h3 class="text-xl font-bold">Disco Duro (HDD)</h3>
+          <p>Almacenamiento magnético, mayor capacidad pero más lento.</p>
+        </div>
+        <div class="bg-white p-4 rounded-2xl shadow hover:shadow-lg transition" data-tipo="secundario">
+          <h3 class="text-xl font-bold">SSD</h3>
+          <p>Unidad de estado sólido, rápida y silenciosa.</p>
+        </div>
+        <div class="bg-white p-4 rounded-2xl shadow hover:shadow-lg transition" data-tipo="nube">
+          <h3 class="text-xl font-bold">Almacenamiento en la Nube</h3>
+          <p>Datos guardados en servidores remotos accesibles por Internet.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tabla comparativa -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">Tabla Comparativa</h2>
+      <div class="overflow-x-auto">
+        <table class="table-auto w-full border border-gray-300">
+          <thead class="bg-gray-200">
+            <tr>
+              <th class="border px-4 py-2">Tipo</th>
+              <th class="border px-4 py-2">Velocidad</th>
+              <th class="border px-4 py-2">Costo</th>
+              <th class="border px-4 py-2">Capacidad</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border px-4 py-2">RAM</td>
+              <td class="border px-4 py-2">Muy alta</td>
+              <td class="border px-4 py-2">Alta</td>
+              <td class="border px-4 py-2">Baja</td>
+            </tr>
+            <tr>
+              <td class="border px-4 py-2">HDD</td>
+              <td class="border px-4 py-2">Media</td>
+              <td class="border px-4 py-2">Bajo</td>
+              <td class="border px-4 py-2">Muy alta</td>
+            </tr>
+            <tr>
+              <td class="border px-4 py-2">SSD</td>
+              <td class="border px-4 py-2">Alta</td>
+              <td class="border px-4 py-2">Medio</td>
+              <td class="border px-4 py-2">Alta</td>
+            </tr>
+            <tr>
+              <td class="border px-4 py-2">Nube</td>
+              <td class="border px-4 py-2">Variable</td>
+              <td class="border px-4 py-2">Por suscripción</td>
+              <td class="border px-4 py-2">Escalable</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Glosario -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">Glosario</h2>
+      <dl class="space-y-2">
+        <div>
+          <dt class="font-bold">Latencia</dt>
+          <dd>Tiempo que tarda en iniciar la transferencia de datos.</dd>
+        </div>
+        <div>
+          <dt class="font-bold">Volátil</dt>
+          <dd>Memoria que pierde su contenido al apagarse el equipo.</dd>
+        </div>
+        <div>
+          <dt class="font-bold">Escalabilidad</dt>
+          <dd>Capacidad de aumentar recursos de forma flexible.</dd>
+        </div>
+      </dl>
+    </section>
+
+    <!-- Quiz simple -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">Mini Quiz</h2>
+      <p class="mb-2">¿Cuál es el tipo de almacenamiento más rápido?</p>
+      <button onclick="verificarRespuesta('RAM')" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 m-1">RAM</button>
+      <button onclick="verificarRespuesta('HDD')" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 m-1">HDD</button>
+      <button onclick="verificarRespuesta('SSD')" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 m-1">SSD</button>
+      <p id="resultado" class="mt-2 font-semibold"></p>
+    </section>
+  </main>
+
+  <footer class="text-center text-gray-500 text-sm p-4">
+    © 2025 - Web educativa de almacenamiento de datos
+  </footer>
+
+  <script>
+    // Filtro dinámico
+    document.getElementById("filtro").addEventListener("change", function() {
+      const valor = this.value;
+      document.querySelectorAll("#tarjetas > div").forEach(card => {
+        card.style.display = (valor === "todos" || card.dataset.tipo === valor) ? "block" : "none";
+      });
+    });
+
+    // Quiz simple
+    function verificarRespuesta(respuesta) {
+      const resultado = document.getElementById("resultado");
+      if (respuesta === "RAM") {
+        resultado.textContent = "✅ Correcto: la RAM es la más rápida.";
+        resultado.classList.add("text-green-600");
+        resultado.classList.remove("text-red-600");
+      } else {
+        resultado.textContent = "❌ Incorrecto. Intenta de nuevo.";
+        resultado.classList.add("text-red-600");
+        resultado.classList.remove("text-green-600");
+      }
+    }
+  </script>
+</body>
+</html>
