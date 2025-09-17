@@ -167,5 +167,146 @@
         durabilidad: "Alta (ACID)",
         escalabilidad: "Vertical, horizontal complejo",
         coste: "Medio",
+        desc: "Base de datos estructurada que usa tablas y SQL."
+      },
+      {
+        tipo: "NoSQL clave-valor",
+        categoria: "bd",
+        uso: "Datos simples de consulta rápida",
+        ejemplos: "Redis, DynamoDB",
+        latencia: "Sub-ms",
+        rendimiento: "Muy alto",
+        durabilidad: "Depende de configuración",
+        escalabilidad: "Horizontal, muy buena",
+        coste: "Variable",
+        desc: "Ideal para cachés y consultas rápidas sin esquema fijo."
+      },
+      {
+        tipo: "Cinta / Archivado",
+        categoria: "archivo",
+        uso: "Almacenamiento a largo plazo, datos fríos",
+        ejemplos: "LTO Ultrium",
+        latencia: "Segundos a minutos",
+        rendimiento: "Bajo",
+        durabilidad: "Muy alta (décadas)",
+        escalabilidad: "Alta (bibliotecas robotizadas)",
+        coste: "Muy bajo por GB",
+        desc: "Solución económica para respaldo y archivado de largo plazo."
+      }
+    ];
+
+    const glosario = [
+      { termino: "Latencia", definicion: "Tiempo que transcurre antes de que comience la transferencia de datos." },
+      { termino: "IOPS", definicion: "Operaciones de Entrada/Salida por segundo; métrica de rendimiento." },
+      { termino: "ACID", definicion: "Atomicidad, Consistencia, Aislamiento, Durabilidad de BD relacionales." },
+      { termino: "RAID", definicion: "Conjunto de discos configurados para redundancia o velocidad." },
+      { termino: "CAP", definicion: "Teorema que dice que Consistencia, Disponibilidad y Tolerancia a particiones no pueden cumplirse a la vez." },
+      { termino: "Throughput", definicion: "Cantidad de datos transferidos por unidad de tiempo." },
+      { termino: "Replica", definicion: "Copia de datos para redundancia o alta disponibilidad." }
+    ];
+
+    const preguntas = [
+      {
+        enunciado: "¿Qué tipo de almacenamiento suele ofrecer la latencia más baja?",
+        opciones: ["HDD", "RAM", "Cinta"],
+        correcta: "RAM"
+      },
+      {
+        enunciado: "¿Qué modelo de almacenamiento usa metadatos y acceso por API?",
+        opciones: ["Bloque", "Objeto", "Relacional"],
+        correcta: "Objeto"
+      },
+      {
+        enunciado: "¿Cuál es ideal para datos fríos y archivado a largo plazo?",
+        opciones: ["SSD NVMe", "Cinta", "NAS"],
+        correcta: "Cinta"
+      }
+    ];
+
+    // === Render dinámico ===
+    const tarjetasContainer = document.getElementById("tarjetas");
+    const tablaBody = document.getElementById("tabla-body");
+    const glosarioDL = document.getElementById("glosario");
+    const quizDiv = document.getElementById("quiz");
+
+    function renderTarjetas(filtro = "todos") {
+      tarjetasContainer.innerHTML = "";
+      items.filter(i => filtro === "todos" || i.categoria === filtro)
+        .forEach(item => {
+          const card = document.createElement("div");
+          card.className = "bg-white p-4 rounded-2xl shadow hover:shadow-lg transition";
+          card.innerHTML = `<h3 class="text-xl font-bold">${item.tipo}</h3>
+            <p class="text-sm text-gray-600 mb-1">${item.uso}</p>
+            <p class="text-gray-700">${item.desc}</p>`;
+          tarjetasContainer.appendChild(card);
+        });
+    }
+
+    function renderTabla() {
+      tablaBody.innerHTML = "";
+      items.forEach(item => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td class="border px-4 py-2">${item.tipo}</td>
+          <td class="border px-4 py-2">${item.latencia}</td>
+          <td class="border px-4 py-2">${item.rendimiento}</td>
+          <td class="border px-4 py-2">${item.durabilidad}</td>
+          <td class="border px-4 py-2">${item.escalabilidad}</td>
+          <td class="border px-4 py-2">${item.coste}</td>`;
+        tablaBody.appendChild(row);
+      });
+    }
+
+    function renderGlosario() {
+      glosarioDL.innerHTML = "";
+      glosario.forEach(g => {
+        const div = document.createElement("div");
+        div.innerHTML = `<dt class="font-bold">${g.termino}</dt><dd>${g.definicion}</dd>`;
+        glosarioDL.appendChild(div);
+      });
+    }
+
+    function renderQuiz() {
+      quizDiv.innerHTML = "";
+      preguntas.forEach((p, idx) => {
+        const cont = document.createElement("div");
+        cont.className = "p-4 bg-white rounded-xl shadow";
+        cont.innerHTML = `<p class="font-semibold mb-2">${idx + 1}. ${p.enunciado}</p>`;
+        p.opciones.forEach(op => {
+          const btn = document.createElement("button");
+          btn.textContent = op;
+          btn.className = "bg-blue-600 text-white px-3 py-1 rounded m-1 hover:bg-blue-700";
+          btn.onclick = () => {
+            const result = cont.querySelector(".resultado");
+            if (op === p.correcta) {
+              result.textContent = "✅ Correcto";
+              result.className = "resultado text-green-600 font-bold";
+            } else {
+              result.textContent = "❌ Incorrecto";
+              result.className = "resultado text-red-600 font-bold";
+            }
+          };
+          cont.appendChild(btn);
+        });
+        const res = document.createElement("p");
+        res.className = "resultado mt-2";
+        cont.appendChild(res);
+        quizDiv.appendChild(cont);
+      });
+    }
+
+    // Eventos
+    document.getElementById("filtro").addEventListener("change", e => {
+      renderTarjetas(e.target.value);
+    });
+
+    // Render inicial
+    renderTarjetas();
+    renderTabla();
+    renderGlosario();
+    renderQuiz();
+  </script>
+</body>
+</html>
 
   
