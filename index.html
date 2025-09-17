@@ -13,17 +13,21 @@
   </header>
 
   <main class="max-w-5xl mx-auto p-4 space-y-10">
-    <!-- Filtro -->
+    <!-- Filtros -->
     <section>
-      <h2 class="text-2xl font-semibold mb-2">Filtrar Tipos</h2>
-      <select id="filtro" class="p-2 border rounded w-full">
-        <option value="todos">Todos</option>
-        <option value="primario">Primario (RAM)</option>
-        <option value="secundario">Secundario (SSD/HDD)</option>
-        <option value="nube">Nube</option>
-        <option value="bd">Bases de Datos</option>
-        <option value="archivo">Archivado</option>
-      </select>
+      <h2 class="text-2xl font-semibold mb-2">Buscar y Filtrar</h2>
+      <div class="flex flex-col sm:flex-row gap-2">
+        <input id="busqueda" type="text" placeholder="Buscar por tipo o uso..."
+          class="flex-1 p-2 border rounded" />
+        <select id="filtro" class="p-2 border rounded">
+          <option value="todos">Todos</option>
+          <option value="primario">Primario (RAM)</option>
+          <option value="secundario">Secundario (SSD/HDD/NAS/SAN)</option>
+          <option value="nube">Nube</option>
+          <option value="bd">Bases de Datos</option>
+          <option value="archivo">Archivado</option>
+        </select>
+      </div>
     </section>
 
     <!-- Tarjetas -->
@@ -32,7 +36,7 @@
       <div id="tarjetas" class="grid sm:grid-cols-2 gap-4"></div>
     </section>
 
-    <!-- Tabla -->
+    <!-- Tabla comparativa -->
     <section>
       <h2 class="text-2xl font-semibold mb-4">Tabla Comparativa</h2>
       <div class="overflow-x-auto">
@@ -99,43 +103,53 @@
       {enunciado:"¿Cuál es ideal para archivado?",opciones:["SSD NVMe","Cinta","NAS"],correcta:"Cinta"}
     ];
 
-    /* === Render === */
-    const tarjetas=document.getElementById("tarjetas");
-    const tablaBody=document.getElementById("tabla-body");
-    const glosarioDL=document.getElementById("glosario");
-    const quizDiv=document.getElementById("quiz");
+    /* === Render Cards === */
+    function renderCards(list) {
+      const container = document.getElementById("tarjetas");
+      container.innerHTML = "";
+      list.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "bg-white p-4 rounded-2xl shadow hover:shadow-lg transition";
+        card.innerHTML = `
+          <h3 class="text-xl font-bold">${item.tipo}</h3>
+          <p class="text-sm text-gray-600 mb-1">${item.uso}</p>
+          <p>${item.desc}</p>
+        `;
+        container.appendChild(card);
+      });
+    }
 
-    function renderTarjetas(filtro="todos"){
-      tarjetas.innerHTML="";
-      items.filter(i=>filtro==="todos"||i.categoria===filtro)
-        .forEach(i=>{
-          const d=document.createElement("div");
-          d.className="bg-white p-4 rounded-2xl shadow hover:shadow-lg";
-          d.innerHTML=`<h3 class="text-xl font-bold">${i.tipo}</h3><p class="text-sm text-gray-600 mb-1">${i.uso}</p><p>${i.desc}</p>`;
-          tarjetas.appendChild(d);
-        });
-    }
-    function renderTabla(){
-      tablaBody.innerHTML="";
-      items.forEach(i=>{
-        tablaBody.innerHTML+=`<tr>
-          <td class="border px-4 py-2">${i.tipo}</td>
-          <td class="border px-4 py-2">${i.latencia}</td>
-          <td class="border px-4 py-2">${i.rendimiento}</td>
-          <td class="border px-4 py-2">${i.durabilidad}</td>
-          <td class="border px-4 py-2">${i.escalabilidad}</td>
-          <td class="border px-4 py-2">${i.coste}</td>
-        </tr>`;
+    /* === Render Tabla === */
+    function renderTabla(list) {
+      const tbody = document.getElementById("tabla-body");
+      tbody.innerHTML = "";
+      list.forEach(item => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-gray-50">
+            <td class="border px-4 py-2">${item.tipo}</td>
+            <td class="border px-4 py-2">${item.latencia}</td>
+            <td class="border px-4 py-2">${item.rendimiento}</td>
+            <td class="border px-4 py-2">${item.durabilidad}</td>
+            <td class="border px-4 py-2">${item.escalabilidad}</td>
+            <td class="border px-4 py-2">${item.coste}</td>
+          </tr>
+        `;
       });
     }
-    function renderGlosario(){
-      glosarioDL.innerHTML="";
-      glosario.forEach(g=>{
-        glosarioDL.innerHTML+=`<div><dt class="font-bold">${g.termino}</dt><dd>${g.definicion}</dd></div>`;
+
+    /* === Glosario === */
+    function renderGlosario() {
+      const dl = document.getElementById("glosario");
+      dl.innerHTML = "";
+      glosario.forEach(g => {
+        dl.innerHTML += `<div><dt class="font-bold">${g.termino}</dt><dd>${g.definicion}</dd></div>`;
       });
     }
-    function renderQuiz(){
-      quizDiv.innerHTML="";
+
+    /* === Quiz === */
+    function renderQuiz() {
+      const quizDiv = document.getElementById("quiz");
+      quizDiv.innerHTML = "";
       preguntas.forEach((p,idx)=>{
         const c=document.createElement("div");
         c.className="bg-white p-4 rounded-xl shadow";
@@ -156,11 +170,38 @@
       });
     }
 
-    document.getElementById("filtro").addEventListener("change",e=>renderTarjetas(e.target.value));
-    renderTarjetas();renderTabla();renderGlosario();renderQuiz();
+    /* === Filtro === */
+    function applyFilter() {
+      const filtroCategoria = document.getElementById("filtro").value;
+      const texto = document.getElementById("busqueda").value.toLowerCase();
+
+      const filtrados = items.filter(item => {
+        const coincideCategoria = filtroCategoria === "todos" || item.categoria === filtroCategoria;
+        const coincideTexto =
+          item.tipo.toLowerCase().includes(texto) ||
+          item.uso.toLowerCase().includes(texto) ||
+          item.desc.toLowerCase().includes(texto);
+        return coincideCategoria && coincideTexto;
+      });
+
+      renderCards(filtrados);
+      renderTabla(filtrados);
+    }
+
+    /* === Inicialización === */
+    document.addEventListener("DOMContentLoaded", () => {
+      renderCards(items);
+      renderTabla(items);
+      renderGlosario();
+      renderQuiz();
+
+      document.getElementById("filtro").addEventListener("change", applyFilter);
+      document.getElementById("busqueda").addEventListener("input", applyFilter);
+    });
   </script>
 </body>
 </html>
+
 
 
   
